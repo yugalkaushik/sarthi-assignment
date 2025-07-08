@@ -12,11 +12,6 @@ The project is divided into two main parts:
   - `/public`: Static assets
 - **Backend**: A FastAPI application that provides keyword-based emotion analysis
 
-## Prerequisites
-
-- Node.js (v14 or newer)
-- Python (v3.8 or newer)
-
 ## Setup Instructions
 
 ### Backend Setup
@@ -39,12 +34,6 @@ The project is divided into two main parts:
 
    ```bash
    venv\Scripts\activate
-   ```
-
-   - macOS/Linux:
-
-   ```bash
-   source venv/bin/activate
    ```
 
 4. Install dependencies:
