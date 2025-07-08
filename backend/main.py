@@ -6,19 +6,17 @@ import re
 
 app = FastAPI(title="Emotion Reflection API")
 
-# Enable CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins
+    allow_origins=["*"], 
     allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods
-    allow_headers=["*"],  # Allows all headers
+    allow_methods=["*"],  
+    allow_headers=["*"],  
 )
 
 class TextInput(BaseModel):
     text: str
 
-# Dictionary of emotions with their descriptions, colors, and related keywords
 emotion_data = {
     "Happy": {
         "description": "You seem to be expressing joy or contentment",
@@ -93,7 +91,6 @@ async def analyze_emotion(input_data: TextInput):
     
     text = input_data.text.lower()
     
-    # Special case handling for situations like accidents and bad news
     if any(word in text for word in ["accident", "crash", "hospital", "injury", "injured", "hurt"]):
         if "friend" in text or "family" in text or "loved" in text:
             selected_emotion = "Sympathetic"
@@ -107,34 +104,26 @@ async def analyze_emotion(input_data: TextInput):
                 "matched": True
             }
     
-    # Initialize scores for each emotion
     emotion_scores = {}
     
-    # Analyze text for emotion keywords
     for emotion_name, data in emotion_data.items():
         score = 0
         for keyword in data["keywords"]:
-            # Count occurrences of the keyword
             count = len(re.findall(r'\b' + re.escape(keyword) + r'\b', text))
             if count > 0:
                 score += count
         
-        # Store the score
         emotion_scores[emotion_name] = score
     
-    # Find emotions with the highest score
     max_score = max(emotion_scores.values()) if emotion_scores else 0
     
     if max_score > 0:
-        # Get all emotions with the highest score
         top_emotions = [emotion for emotion, score in emotion_scores.items() if score == max_score]
         selected_emotion = random.choice(top_emotions)
         
-        # Higher confidence for higher scores (capped at 0.95)
         base_confidence = min(0.7 + (max_score * 0.05), 0.95)
         confidence = round(random.uniform(base_confidence, base_confidence + 0.03), 2)
     else:
-        # If no keywords match, default to Confused with lower confidence
         selected_emotion = "Confused"
         confidence = round(random.uniform(0.6, 0.7), 2)
     
