@@ -1,0 +1,3 @@
+@echo off
+echo Starting Emotion Reflection Tool Backend...
+python main.py
